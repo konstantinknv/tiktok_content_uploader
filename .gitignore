@@ -1,0 +1,49 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+
+# Playwright downloads (browser binaries)
+playwright/.cache/
+playwright/.playwright/
+
+# Test and coverage results
+.coverage
+htmlcov/
+coverage.xml
+.tox/
+nosetests.xml
+test-results/
+
+# Logs and temp files
+*.log
+*.tmp
+*.bak
+*.swp
+*.DS_Store
+
+# Python packaging
+build/
+dist/
+*.egg-info/
+
+# dotenv files (credentials, secrets)
+.env
+.env.*
+
+# Custom folders to ignore (you can add your own)
+uploads/
+output/
+storage/
+__tests__/
