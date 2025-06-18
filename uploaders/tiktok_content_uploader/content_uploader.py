@@ -6,6 +6,7 @@ from common.exceptions import AuthException
 from common.utils import create_slideshow
 from common.utils import generate_filename
 from config import mainconfig
+from config.uploader_config import UploaderConfig
 from uploaders.base.base_uploader import BaseUploader
 from . import UPLOADER_NAME
 
@@ -16,8 +17,8 @@ class ContentUploader(BaseUploader):
     UPLOAD_PAGE_URL = 'https://www.tiktok.com/tiktokstudio/upload?from=webapp&lang=en'
 
     def __init__(self):
-        self.uploader_parameters = mainconfig.UPLOADER_PARAMETERS[UPLOADER_NAME]
-        super().__init__(uploader_name=UPLOADER_NAME, **self.uploader_parameters)
+        self.uploader_config: UploaderConfig = mainconfig.UPLOADER_PARAMETERS[UPLOADER_NAME]
+        super().__init__(uploader_name=UPLOADER_NAME, **self.uploader_config.as_dict())
 
     async def upload_photo(self, files: list, *args, **kwargs) -> None:
         await self._upload_slideshow(files)
@@ -42,8 +43,8 @@ class ContentUploader(BaseUploader):
             self._delete_temp_file(file_path=slideshow)
 
     async def _is_logged_in(self) -> bool:
-        if not self.uploader_parameters.get(mainconfig.AUTH_USERNAME_KEY) \
-                or not self.uploader_parameters.get(mainconfig.AUTH_PASSWORD_KEY):
+        if not self.uploader_config.auth_username \
+                or not self.uploader_config.auth_password:
             self._logger.warning(f'Username and/or password is not set for uploader: {UPLOADER_NAME}')
             return True
 
@@ -81,13 +82,13 @@ class ContentUploader(BaseUploader):
         await login_with_email_and_password_button.click()
         await self._page.type(
             selector='//input[@name="username"]',
-            text=self.uploader_parameters[mainconfig.AUTH_USERNAME_KEY],
+            text=self.uploader_config.auth_username,
             timeout=10_000,
             delay=random.randint(100, 500),
         )
         await self._page.type(
             selector='//input[@type="password"]',
-            text=self.uploader_parameters[mainconfig.AUTH_PASSWORD_KEY],
+            text=self.uploader_config.auth_password,
             timeout=random.randint(100, 500),
         )
         submit_button = self._page.locator(

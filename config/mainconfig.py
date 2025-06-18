@@ -12,17 +12,16 @@ from common.proxy import (
     get_proxies,
     proxies_to_proxy_settings,
 )
+from config.uploader_config import UploaderConfig
 
 env_file = os.environ.get('ENV_FILE', ".env")
 config = Config(RepositoryEnv(env_file))
 
-PROJECT_ROOT_FOLDER = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+PROJECT_ROOT_FOLDER = Path(__file__).resolve().parent.parent
 
 
 def get_storage_path(uploader_name: str) -> str:
-    path = Path(
-        os.path.realpath(__file__)).parent.parent / 'storage_states' / f'{uploader_name}_browser_storage.json'
-    return str(path)
+    return str(PROJECT_ROOT_FOLDER / 'storage_states' / f'{uploader_name}_browser_storage.json')
 
 
 # Check Python version
@@ -34,14 +33,19 @@ if sys.version_info < (3, 11):
 VIDEO_UPLOAD_METHOD = 'upload_video'
 PHOTO_UPLOAD_METHOD = 'upload_photo'
 
+SUPPORTED_EXTENSIONS = {
+    'video': ('.mp4', '.mov', '.avi', '.mkv'),
+    'photo': ('.jpg', '.jpeg', '.png', '.bmp'),
+}
+
 METHOD_TO_UPLOAD_SETTINGS_BIND = {
     VIDEO_UPLOAD_METHOD: {
         'folder': config('VIDEOS_FOLDER', default='videos'),
-        'supported_extensions': ('.mp4', '.mov', '.avi', '.mkv'),
+        'supported_extensions': SUPPORTED_EXTENSIONS['video'],
     },
     PHOTO_UPLOAD_METHOD: {
         'folder': config('PHOTOS_FOLDER', default='photos'),
-        'supported_extensions': ('.jpg', '.jpeg', '.png', '.bmp'),
+        'supported_extensions': SUPPORTED_EXTENSIONS['photo'],
     },
 }
 
@@ -49,25 +53,22 @@ HTTP_PROXY = config('HTTP_PROXY', default=None)
 HTTPS_PROXY = config('HTTPS_PROXY', default=None)
 
 DEFAULT_PROXIES = {}
-DEFAULT_HTTPX_PROXY = {}
 
 if HTTP_PROXY:
     DEFAULT_PROXIES['http'] = HTTP_PROXY
-    DEFAULT_HTTPX_PROXY['http://'] = HTTP_PROXY
 if HTTPS_PROXY:
     DEFAULT_PROXIES['https'] = HTTPS_PROXY
 
-AUTH_USERNAME_KEY = 'auth_username'
-AUTH_PASSWORD_KEY = 'auth_password'
+DEFAULT_HTTPX_PROXY = {'http://': HTTP_PROXY} if HTTP_PROXY else {}
 
 UPLOADER_PARAMETERS = {
-    'tiktok': {
-        'proxy_settings': proxies_to_proxy_settings(
+    'tiktok': UploaderConfig(
+        storage_state=config('TIKTOK_UPLOADER_STORAGE_PATH', default=str(get_storage_path('tiktok'))),
+        proxy_settings=proxies_to_proxy_settings(
             get_proxies(config, "TIKTOK_UPLOADER_HTTP_PROXY", "TIKTOK_UPLOADER_HTTPS_PROXY")
         ) or DEFAULT_PROXIES,
-        'headless': False,
-        'storage_state': config('TIKTOK_UPLOADER_STORAGE_PATH', default=get_storage_path('tiktok')),
-        AUTH_USERNAME_KEY: config('TIKTOK_UPLOADER_AUTH_USERNAME'),
-        AUTH_PASSWORD_KEY: config('TIKTOK_UPLOADER_AUTH_PASSWORD'),
-    },
+        headless=False,
+        auth_username=config('TIKTOK_UPLOADER_AUTH_USERNAME'),
+        auth_password=config('TIKTOK_UPLOADER_AUTH_PASSWORD')
+    ),
 }
