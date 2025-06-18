@@ -24,7 +24,7 @@ from tenacity import (
     retry_if_exception_type,
 )
 
-from common.executable_path_creator import find_chrome_executable
+from common.utils import find_chrome_executable
 from common.logging_setup import get_named_logger
 from config.mainconfig import PROJECT_ROOT_FOLDER
 

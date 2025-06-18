@@ -19,8 +19,6 @@ An asynchronous CLI tool built with Python for automatically uploading video and
 📦 tiktok_content_uploader/
 ├── common/
 │   ├── exceptions.py                     # Custom exceptions
-│   ├── executable_path_creator.py        # Script that creates executable_path for Playwright initialization
-│   ├── images_to_slideshow_converter.py  # Script that converts images to a video
 │   ├── logging_setup.py                  # Logging configuration
 │   ├── module_loader.py                  # Dynamic module loader
 │   ├── proxy.py                          # Short scripts related to proxy convertion/parsing

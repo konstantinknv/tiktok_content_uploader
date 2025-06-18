@@ -3,7 +3,7 @@ import random
 from asyncio import sleep
 
 from common.exceptions import AuthException
-from common.images_to_slideshow_converter import create_slideshow
+from common.utils import create_slideshow
 from common.utils import generate_filename
 from config import mainconfig
 from uploaders.base.base_uploader import BaseUploader
