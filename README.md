@@ -18,20 +18,25 @@ An asynchronous CLI tool built with Python for automatically uploading video and
 <pre>
 📦 tiktok_content_uploader/
 ├── common/
-│   ├── logging_setup.py         # Logging configuration
-│   ├── module_loader.py         # Dynamic module loader
-│   └── utils.py                 # Helper functions
+│   ├── exceptions.py                     # Custom exceptions
+│   ├── executable_path_creator.py        # Script that creates executable_path for Playwright initialization
+│   ├── images_to_slideshow_converter.py  # Script that converts images to a video
+│   ├── logging_setup.py                  # Logging configuration
+│   ├── module_loader.py                  # Dynamic module loader
+│   ├── proxy.py                          # Short scripts related to proxy convertion/parsing
+│   └── utils.py                          # Helper functions
 ├── config/
-│   └── mainconfig.py            # Main configuration
+│   └── mainconfig.py                     # Main configuration
+├── storage_states/                       # Folder to store the browser sessions
 ├── uploaders/
 │   ├── base/
-│   │   └── base_uploader.py     # Abstract base uploader (Playwright context)
+│   │   └── base_uploader.py              # Abstract base uploader (Playwright context)
 │   └── tiktok_content_uploader/
-│       └── content_uploader.py  # TikTok uploader implementation
-├── media/
-│   ├── photos/                  # Folder for photos to upload
-│   └── videos/                  # Folder for videos to upload
-├── main.py                      # Entry point (CLI)
+│       └── content_uploader.py           # TikTok uploader implementation
+├── chromium/                             # Folder for chrome to unpack
+├── photos/                               # Folder for photos to upload
+├── videos/                               # Folder for videos to upload
+├── main.py                               # Entry point (CLI)
 ├── .gitignore
 ├── requirements.txt
 └── README.md
